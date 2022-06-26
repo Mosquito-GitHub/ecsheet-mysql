@@ -1,0 +1,45 @@
+<configuration scan="true" scanPeriod="2 minutes" debug="false">
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+
+    <appender name="timeBasedInfo" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>INFO</level>
+        </filter>
+        <file>./logs/common/info</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>./logs/common/info.%d.%i{yyyy-MM-dd}</fileNamePattern>
+            <maxHistory>10</maxHistory>
+            <maxFileSize>200MB</maxFileSize>
+            <totalSizeCap>2GB</totalSizeCap>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%thread] %logger{50} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="timeBasedError" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>ERROR</level>
+        </filter>
+        <file>./logs/common/error</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>./logs/common/error.%d.%i{yyyy-MM-dd}</fileNamePattern>
+            <maxHistory>30</maxHistory>
+            <maxFileSize>200MB</maxFileSize>
+            <totalSizeCap>2GB</totalSizeCap>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%thread] %logger{50} - %msg%n</pattern>
+        </encoder>
+    </appender>
+    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%thread] %logger{50} - %msg%n</pattern>
+        </encoder>
+    </appender>
+    <root level="info">
+        <appender-ref ref="timeBasedInfo"/>
+        <appender-ref ref="timeBasedError"/>
+        <appender-ref ref="console"/>
+    </root>
+</configuration>

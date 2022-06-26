@@ -1,0 +1,76 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>LuckSheet Import</title>
+	<link rel="icon" type="image/x-icon" href="/img/favicon.ico"/>
+
+	<link rel='stylesheet' href='/lib/plugins/css/pluginsCss.css'/>
+	<link rel='stylesheet' href='/lib/plugins/plugins.css'/>
+	<link rel='stylesheet' href='/lib/css/luckysheet.css'/>
+	<link rel='stylesheet' href='/lib/assets/iconfont/iconfont.css'/>
+	<script src="/lib/plugins/js/plugin.js"></script>
+	<script src="/lib/luckysheet.umd.js"></script>
+	<script src="/js/luckyexcel.umd.js"></script>
+	<script src="/js/jquery.ztree.all.min.js"></script>
+	<script src="/js/jquery.ztree.core.min.js"></script>
+<script>
+    $(function () {
+        //Configuration item
+        var options = {
+            container: 'luckysheet', //luckysheet is the container id
+            showinfobar:false,
+        }
+        luckysheet.create(options)
+    });
+</script>
+</head>
+<body>
+	<p style="text-align: left;">
+		<input style="font-size: 16px;" type="file" id="Luckyexcel-demo-file" name="Luckyexcel-demo-file" change="importHandler" autocomplete="off"/> 
+	</p>
+	<div id="luckysheet"
+		style="margin: 0px; padding: 0px; position: absolute; width: 100%; left: 0px; top: 50px; bottom: 0px; outline: none;">
+	</div>
+	<script>
+            function importHandler(){
+                let upload = document.getElementById("Luckyexcel-demo-file");
+                if(upload){
+                    
+                    window.onload = () => {
+                        
+                        upload.addEventListener("change", function(evt){
+                            var files = evt.target.files;
+                            if(files==null || files.length==0){
+                                alert("No files wait for import");
+                                return;
+                            }
+
+                            let name = files[0].name;
+                            let suffixArr = name.split("."), suffix = suffixArr[suffixArr.length-1];
+                            if(suffix!="xlsx"){
+                                alert("Currently only supports the import of xlsx files");
+                                return;
+                            }
+                            LuckyExcel.transformExcelToLucky(files[0], function(exportJson, luckysheetfile){
+                                
+                                if(exportJson.sheets==null || exportJson.sheets.length==0){
+                                    alert("Failed to read the content of the excel file, currently does not support xls files!");
+                                    return;
+                                }
+                                console.log(exportJson, luckysheetfile);
+                                window.luckysheet.destroy();
+                                $.ajaxSetup({contentType: "application/json; charset=utf-8"});
+                                $.post("/index/upload", JSON.stringify({"exceldatas": exportJson.sheets}), function (data) {
+                                      console.log("data = " + data);
+                                      window.location.href = '/index/' + data;
+                                });
+                            });
+                        });
+                    }
+                }
+            }
+            importHandler();
+        </script>
+</body>
+</html>

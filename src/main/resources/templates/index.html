@@ -1,0 +1,92 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>各部门人工时分项目统计表</title>
+	<link rel="icon" type="image/x-icon" href="/img/favicon.ico"/>
+	<link rel="stylesheet" type="text/css" href="css/normalize.css" /><!--CSS RESET-->
+	<link rel="stylesheet" type="text/css" href="css/htmleaf-demo.css"><!--演示页面样式，使用时可以不引用-->
+	<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="htmleaf-container">
+	<header class="htmleaf-header">
+		<h1>各部门人工时分项目统计表 </h1>
+		<!--<a  href="https://github.com/mengshukeji/Luckysheet" title="Luckysheet" target="_blank"><span>友情链接： Luckysheet</span></a>-->
+	</header>
+	<h1>列表：</h1>
+
+
+	<main id=app>
+
+		<mochi-box shiba="random">
+			<h3>
+				新建表格
+			</h3>
+			<a href="/index/create"> <img src="img/create.png" /></a>
+		</mochi-box>
+
+		<mochi-box shiba="random">
+			<h3>
+				导入表格
+			</h3>
+			<a href="/import"> <img src="img/create.png" /></a>
+		</mochi-box>
+
+		<#list all as wb>
+
+		<mochi-box shiba="random" >
+			<h3>
+				<a target="_blank" href="/index/${wb.id}">${wb.option.title}</a>
+			</h3>
+			<h5>
+				<a href="/index" onclick="deleteSheet('${wb.id}')">删除</a>
+				<a target="_blank" href="index/export/${wb.id}">导出</a>
+			</h5>
+			<a target="_blank" href="/index/${wb.id}"> <img src="img/excel.png" /></a>
+		</mochi-box>
+	</#list>
+
+	</main>
+
+</div>
+<script src='js/vue.min.js'></script>
+<script  src="js/script.js"></script>
+<script src="js/luckyexcel.umd.js"></script>
+<script src="https://code.jquery.com/jquery-3.0.0.min.js"></script>
+<script>
+
+	function deleteSheet(webId) {
+		$.ajax({
+			type: 'GET',
+			url: "delete/" + webId,
+			dataType: 'json',
+			cache: false, // 异步请求时false
+			headers: {
+				'Content-Type': 'application/json;charset=utf-8'
+			},
+			success: function(webId, status) {
+				console.log("success");
+			}
+		});
+	}
+	function exportSheet(webId) {
+	$.ajax({
+			type: 'GET',
+			url: "index/export/" + webId,
+			dataType: 'json',
+			cache: false, // 异步请求时false
+			headers: {
+				'Content-Type': 'application/json;charset=utf-8'
+			},
+			success: function(webId, status) {
+				console.log("success");
+			}
+		});
+	}
+</script>
+
+</body>
+</html>
